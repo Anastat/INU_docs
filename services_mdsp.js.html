@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSDoc: services/mdsp.js</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
+  </head>
+
+  <body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+      <div class="container">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <h1 class="navbar-item">INU app</h1>
+
+            <a
+              id="hamburger"
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
+      <div class="columns">
+        <div class="column is-3" id="sidebarNav">
+          <div class="sidebar">
+            <nav>
+              <h2><a href="index.html">Home</a></h2>
+              <div class="category">
+                <h3>Services</h3>
+                <ul>
+                  <li>
+                    <a href="services_mdsp.js.html">Mindsphere service</a>
+                  </li>
+                </ul>
+                <h3>Utils</h3>
+                <ul>
+                  <li>
+                    <a href="utils_lineChart.js.html">Line chart</a>
+                  </li>
+                </ul>
+                <h3>Views</h3>
+                <ul>
+                  <li><a href="views_Home.vue.html">Home</a></li>
+                  <li><a href="views_Options.vue.html">Options</a></li>
+                  <li><a href="views_SensorChart.vue.html">SensorChart</a></li>
+                  <li><a href="views_StatusList.vue.html">StatusList</a></li>
+                  <li><a href="views_WebView.vue.html">WebView</a></li>
+                  <li><a href="views_Account.vue.html">Account</a></li>
+                  <li><a href="views_Camera.vue.html">Camera</a></li>
+                </ul>
+                <h3>Components</h3>
+                <ul>
+                  <li><a href="components_Chart.vue.html">Chart</a></li>
+                  <li><a href="components_ItemInfo.vue.html">ItemInfo</a></li>
+                  <li><a href="components_Navbar.vue.html">Navbar</a></li>
+                  <li>
+                    <a href="components_OptionsSwitch.vue.html">OptionsSwitch</a>
+                  </li>
+                  <li>
+                    <a href="components_ThresholdsModal.vue.html">ThresholdsModal</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+        <div class="column is-9-desktop">
+          <div class="content" id="main-content-wrapper">
+            <header class="page-title">
+              <p>Source</p>
+              <h1>services/mdsp.js</h1>
+            </header>
+            <article>
+              <p>
+                File contains methods for retrieving and sending sensors data
+                and thresholds from Mindsphere IoT Time Series Service API 
+                URL https://gateway.eu1.mindsphere.io/api/iottimeseries/v3/timeseries/</p>
+                <p>Time Series specification:
+                <link href="https://developer.mindsphere.io/apis/iot-iottimeseries/api-iottimeseries-api-swagger-3-4-0.html">
+                  https://developer.mindsphere.io/apis/iot-iottimeseries/api-iottimeseries-api-swagger-3-4-0.html</link>
+              </p>
+              <h4>Methods:</h4>
+              <p>-> getToken() - get token from Mindsphere. It needs for Mindsphere Time Series API calls as an authorization header key.</p>
+              <p>-> postData() - post Mindsphere user credentials. Method is used in getToken().</p>
+              <p>-> getData() - get sensors data from Mindsphere Time Series Service.</p>
+              <p>-> getDataFromTo() - get sensors data for period of time.</p>
+              <p>-> getTempThreshold() - get temperature thresholds min max values.</p>
+              <p>-> getHumidityThreshold() - get humidity thresholds min max values.</p>
+              <p>-> putTempThreshold() - put to Mindsphere temperature threshold values defined by user.</p>
+              <p>-> putHumidityThreshold() - put to Mindsphere humidity threshold values defined by user.</p>
+              <br>
+              <p>How to use in Vue component:</p>
+              <p>- import inside script:</p>
+              <p>import mdspService from "../services/mdsp"</p>
+              <p>- in method:</p>
+              <p>const sensorData = mdspService.getData();</p>
+            </article>
+            <section>
+              <article>
+                <pre class="prettyprint source linenums"><code>
+                  
+const getToken = async function() {
+  try {
+    const url = process.env.TOKEN_URL;
+    const data = {
+      appName: "inu",
+      appVersion: "1.0.0",
+      hostTenant: "mpamkdev",
+      userTenant: "mpamkdev"
+    };
+    const response = await postData(url, data);
+    return response;
+  } catch (e) {
+    //console.log(e);
+  }
+};
+
+async function postData(url = "", data = {}) {
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+      "X-SPACE-AUTH-KEY": process.env.SECRET
+    }
+  });
+  return await response.json();
+}
+
+const getData = async function() {
+  const token = await getToken();
+  const resp = await fetch(process.env.DATA_URL, {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token.access_token
+    }
+  });
+  return await resp.json();
+};
+
+const getDataFromTo = async function(fromParams, toParams) {
+  const token = await getToken();
+  const params = { from: fromParams, to: toParams };
+  const urlParams = new URLSearchParams(Object.entries(params));
+  const url = process.env.DATA_URL + "?" + urlParams;
+
+  const resp = await fetch(url, {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token.access_token
+    }
+  });
+  return await resp.json();
+};
+
+const getTempThreshold = async function() {
+  const token = await getToken();
+  const resp = await fetch(process.env.TEMP_THRESHOLD_URL, {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token.access_token
+    }
+  });
+  return await resp.json();
+};
+
+const getHumidityThreshold = async function() {
+  const token = await getToken();
+  const resp = await fetch(process.env.HUMIDITY_THRESHOLD_URL, {
+    method: "GET",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token.access_token
+    }
+  });
+  return await resp.json();
+};
+
+async function putTempThreshold(data) {
+  const token = await getToken();
+  const response = await fetch(process.env.TEMP_THRESHOLD_URL, {
+    method: "PUT",
+    mode: "cors",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token.access_token
+    }
+  });
+  return await response;
+}
+
+async function putHumidityThreshold(data) {
+  const token = await getToken();
+  const response = await fetch(process.env.HUMIDITY_THRESHOLD_URL, {
+    method: "PUT",
+    mode: "cors",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token.access_token
+    }
+  });
+  return await response;
+}
+
+export default {
+  getData,
+  getDataFromTo,
+  getTempThreshold,
+  getHumidityThreshold,
+  putTempThreshold,
+  putHumidityThreshold
+};
+</code></pre>
+              </article>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          Documentation generated by
+          <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Dec
+          13 2019 10:06:26 GMT+0200 (Eastern European Standard Time)
+        </p>
+        <p class="sidebar-created-by">
+          <a
+            href="https://github.com/SoftwareBrothers/better-docs"
+            target="_blank"
+            >BetterDocs theme</a
+          >
+          provided with <i class="fas fa-heart"></i> by
+          <a href="http://softwarebrothers.co" target="_blank"
+            >SoftwareBrothers - JavaScript Development Agency</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.min.js"></script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>

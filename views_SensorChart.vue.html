@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSDoc: views/SensorChart.vue</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
+  </head>
+
+  <body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+      <div class="container">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <h1 class="navbar-item">INU app</h1>
+
+            <a
+              id="hamburger"
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
+      <div class="columns">
+        <div class="column is-3" id="sidebarNav">
+          <div class="sidebar">
+            <nav>
+              <h2><a href="index.html">Home</a></h2>
+              <div class="category">
+                <h3>Services</h3>
+                <ul>
+                  <li>
+                    <a href="services_mdsp.js.html">Mindsphere service</a>
+                  </li>
+                </ul>
+                <h3>Utils</h3>
+                <ul>
+                  <li>
+                    <a href="utils_lineChart.js.html">Line chart</a>
+                  </li>
+                </ul>
+                <h3>Views</h3>
+                <ul>
+                  <li><a href="views_Home.vue.html">Home</a></li>
+                  <li><a href="views_Options.vue.html">Options</a></li>
+                  <li><a href="views_SensorChart.vue.html">SensorChart</a></li>
+                  <li><a href="views_StatusList.vue.html">StatusList</a></li>
+                  <li><a href="views_WebView.vue.html">WebView</a></li>
+                  <li><a href="views_Account.vue.html">Account</a></li>
+                  <li><a href="views_Camera.vue.html">Camera</a></li>
+                </ul>
+                <h3>Components</h3>
+                <ul>
+                  <li><a href="components_Chart.vue.html">Chart</a></li>
+                  <li><a href="components_ItemInfo.vue.html">ItemInfo</a></li>
+                  <li><a href="components_Navbar.vue.html">Navbar</a></li>
+                  <li>
+                    <a href="components_OptionsSwitch.vue.html"
+                      >OptionsSwitch</a
+                    >
+                  </li>
+                  <li>
+                    <a href="components_ThresholdsModal.vue.html"
+                      >ThresholdsModal</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+        <div class="column is-9-desktop">
+          <div class="content" id="main-content-wrapper">
+            <header class="page-title">
+              <p>Source</p>
+              <h1>views/SensorChart.vue</h1>
+            </header>
+            <article>
+              <p>
+                SensorsChart.vue displays information about sensors current
+                value and statistics for last two days in chart.
+              </p>
+              <p>
+                Component contains method that retriver sensor information from
+                IoT Time Series Service for period of time
+              </p>
+              <p>
+                This component uses Vue-speedometer component library
+                documentation can be found:
+              </p>
+              <p>https://www.npmjs.com/package/vue-speedometer</p>
+              <h4>Child components:</h4>
+              <p>- Chart.vue</p>
+              <p>- VueSpeedometer.vue</p>
+              <h4>Methods:</h4>
+              <p>
+                -> getChartStatistics() - Fetch data from Mindsphere IoT Time
+                Series API for 2 days
+              </p>
+              <p>
+                -> filterTimeseriesData() - Filter array of Time Series results
+                for period of time. Return data values for every 3 hours
+              </p>
+              <p>
+                -> chartSensorData() - Fill array with sensor values for line
+                chart.
+              </p>
+            </article>
+            <section>
+              <article>
+                <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div class="tab__content">
+    &lt;div v-if="chartData.datasets">
+      &lt;div class="uk-flex uk-flex-center">
+        &lt;div
+          v-if="item.value"
+          class="uk-flex uk-flex-center uk-card uk-card-body small-padding"
+        >
+          &lt;vue-speedometer
+            :minValue="
+              item.name == 'Temperature'
+                ? -40
+                : item.name == 'Barometer'
+                ? 960
+                : 0
+            "
+            :maxValue="
+              item.name == 'Temperature'
+                ? 40
+                : item.name == 'Barometer'
+                ? 1060
+                : 100
+            "
+            :height="180"
+            :value="item.value"
+            needleColor="steelblue"
+            startColor="#4503fc"
+            endColor="#fc0303"
+            :segmentColors="[
+              '#ADA6F7',
+              '#D9D6FB',
+              '#C6F9D3',
+              '#F8F5B6',
+              '#FACECE'
+            ]"
+            :currentValueText="
+              item.name == 'Temperature'
+                ? '${value} ℃'
+                : item.name == 'Barometer'
+                ? '${value} mbar'
+                : '${value} %'
+            "
+          />
+        &lt;/div>
+      &lt;/div>
+      &lt;div
+        class="uk-card uk-card-default uk-card-small uk-card-body uk-width-auto chart"
+      >
+        &lt;Chart :key="chartData.length" :chartData="chartData" />
+      &lt;/div>
+    &lt;/div>
+    &lt;div v-else class="align-center">
+      &lt;span class="uk-align-center" uk-spinner="ratio: 3">&lt;/span>
+    &lt;/div>
+  &lt;/div>
+&lt;/template>
+
+&lt;script>
+import Chart from "../components/Chart";
+import VueSpeedometer from "vue-speedometer";
+import mdspService from "../services/mdsp";
+
+export default {
+  name: "SensorChart",
+  components: {
+    Chart,
+    VueSpeedometer
+  },
+  props: {
+    item: {
+      type: Object
+    }
+  },
+  data() {
+    return {
+      chartData: []
+    };
+  },
+  mounted: function() {
+    this.getChartStatistics();
+  },
+  methods: {
+    /**
+     * Filter array of timeseries results for period of time.
+     * Return data values for every 3 hours
+     */
+    filterTimeseriesData: function(dataForPeriod) {
+      const regex = new RegExp(
+        "T00:0|T03:0|T06:0|T09:0|T12:0|T15:0|T18:0|T21:0"
+      );
+      const filteredData = dataForPeriod.filter(item =>
+        item._time.match(regex)
+      );
+      return filteredData;
+    },
+    /**
+     * Fill array with sensor values for chart
+     */
+    chartSensorData: function(data) {
+      const sensor = this.item.sensor;
+      let chartData = [];
+      data.forEach(obj => {
+        const axisValues = {
+          x: new Date(obj._time),
+          y: obj[sensor]
+        };
+        chartData.push(axisValues);
+      });
+      return chartData;
+    },
+    getChartData: function(filteredData) {
+      return {
+        datasets: [
+          {
+            data: this.chartSensorData(filteredData),
+            fill: false,
+            borderColor: "#005cbf",
+            backgroundColor: "#005cbf",
+            pointRadius: "2.3",
+            pointHoverRadius: "4.2",
+            label: this.item.name,
+            yAxisID: "y-axis",
+            xAxisID: "x-axis"
+          }
+        ]
+      };
+    },
+
+    getChartStatistics: async function() {
+      /**
+       * Fetch data from Mindsphere IoT Timeseries API
+       * for 2 days
+       */
+      const currentTime = this.moment().format("YYYY-MM-DDTHH:mm:ss.SSS"); //Today
+      const twoDaysBefore = this.moment()
+        .subtract(2, "days")
+        .format("YYYY-MM-DDTHH:mm:ss.SSS"); //Two days before today
+
+      const dataForPeriod = await mdspService.getDataFromTo(
+        twoDaysBefore + "Z",
+        currentTime + "Z"
+      );
+      //Filter result to left values for every 3 hour
+      const filteredData = this.filterTimeseriesData(dataForPeriod);
+      //Fill array with values necessary for building chart
+      this.chartData = this.getChartData(filteredData);
+    }
+  }
+};
+&lt;/script>
+
+&lt;style>
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.align-center {
+  text-align: center;
+  margin-top: 30px;
+}
+.chart {
+  border: 1px solid #d2d2d2 !important;
+  -webkit-box-shadow: 5px 5px 5px grey;
+  box-shadow: 5px 5px 5px grey;
+}
+.small-padding {
+  padding: 30px 15px;
+}
+&lt;/style>
+</code></pre>
+              </article>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          Documentation generated by
+          <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Dec
+          13 2019 10:06:26 GMT+0200 (Eastern European Standard Time)
+        </p>
+        <p class="sidebar-created-by">
+          <a
+            href="https://github.com/SoftwareBrothers/better-docs"
+            target="_blank"
+            >BetterDocs theme</a
+          >
+          provided with <i class="fas fa-heart"></i> by
+          <a href="http://softwarebrothers.co" target="_blank"
+            >SoftwareBrothers - JavaScript Development Agency</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.min.js"></script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>

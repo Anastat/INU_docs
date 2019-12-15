@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSDoc: views/StatusList.vue</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
+  </head>
+
+  <body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+      <div class="container">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <h1 class="navbar-item">INU app</h1>
+
+            <a
+              id="hamburger"
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
+      <div class="columns">
+        <div class="column is-3" id="sidebarNav">
+          <div class="sidebar">
+            <nav>
+              <h2><a href="index.html">Home</a></h2>
+              <div class="category">
+                <h3>Services</h3>
+                <ul>
+                  <li>
+                    <a href="services_mdsp.js.html">Mindsphere service</a>
+                  </li>
+                </ul>
+                <h3>Utils</h3>
+                <ul>
+                  <li>
+                    <a href="utils_lineChart.js.html">Line chart</a>
+                  </li>
+                </ul>
+                <h3>Views</h3>
+                <ul>
+                  <li><a href="views_Home.vue.html">Home</a></li>
+                  <li><a href="views_Options.vue.html">Options</a></li>
+                  <li><a href="views_SensorChart.vue.html">SensorChart</a></li>
+                  <li><a href="views_StatusList.vue.html">StatusList</a></li>
+                  <li><a href="views_WebView.vue.html">WebView</a></li>
+                  <li><a href="views_Account.vue.html">Account</a></li>
+                  <li><a href="views_Camera.vue.html">Camera</a></li>
+                </ul>
+                <h3>Components</h3>
+                <ul>
+                  <li><a href="components_Chart.vue.html">Chart</a></li>
+                  <li><a href="components_ItemInfo.vue.html">ItemInfo</a></li>
+                  <li><a href="components_Navbar.vue.html">Navbar</a></li>
+                  <li>
+                    <a href="components_OptionsSwitch.vue.html"
+                      >OptionsSwitch</a
+                    >
+                  </li>
+                  <li>
+                    <a href="components_ThresholdsModal.vue.html"
+                      >ThresholdsModal</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+        <div class="column is-9-desktop">
+          <div class="content" id="main-content-wrapper">
+            <header class="page-title">
+              <p>Source</p>
+              <h1>views/StatusList.vue</h1>
+            </header>
+            <article>
+              <p>StatusList.vue display on home mobile screen.</p>
+              <p>
+                It contains current sensors values (temperature, humidity,
+                barometer). Component send in props item data to child
+                component.
+              </p>
+
+              <h4>Child component:</h4>
+              <p>- ItemInfo.vue</p>
+
+              <h4>Methods:</h4>
+              <p>
+                -> loadSensorsData() - Method fetch humidity, temperature and
+                barometer sensors information from Mindsphere IoT Time Series
+                Service More information about API usage in services/mdsp.js
+              </p>
+              <h4>Route path on mobile /</h4>
+            </article>
+            <section>
+              <article>
+                <pre class="prettyprint source linenums"><code>&lt;template>
+  &lt;div>
+    &lt;br />
+    &lt;div class="list" v-if="time">
+      &lt;ul class="list__list">
+        &lt;ItemInfo
+          v-for="item in items"
+          :key="item.id"
+          :item="item"
+          :webView="false"
+        />
+      &lt;/ul>
+    &lt;/div>
+    &lt;div v-else class="align-center">
+      &lt;span class="uk-align-center" uk-spinner="ratio: 3">&lt;/span>
+    &lt;/div>
+  &lt;/div>
+&lt;/template>
+
+&lt;script>
+
+import ItemInfo from "@/components/ItemInfo";
+import mdspService from "../services/mdsp";
+import weatherService from "../services/weatherService";
+
+export default {
+  name: "StatusList",
+  components: {
+    ItemInfo
+  },
+  data() {
+    return {
+      time: null, //Time from last timeseries data
+      interval: null,
+      items: [
+        {
+          id: 1,
+          name: "Temperature",
+          icon: "temperature",
+          sensor: "Temperature",
+          value: null,
+          measure: "celsius"
+        },
+        {
+          id: 2,
+          name: "Humidity",
+          icon: "humidity",
+          sensor: "Humidity",
+          value: null,
+          measure: "percent"
+        },
+        {
+          id: 3,
+          name: "Barometer",
+          icon: "pressure",
+          sensor: "Barometric_Pressure",
+          value: null,
+          measure: "millibar"
+        },
+        {
+          id: 4,
+          name: "Camera",
+          icon: "camera",
+          sensor: "camera",
+          value: "ON",
+          measure: ""
+        },
+        {
+          id: 5,
+          name: "Weather",
+          icon: "weather",
+          sensor: "weather",
+          value: null,
+          measure: "celsius"
+        }
+      ]
+    };
+  },
+
+  /**
+   * on 'created' lifehook fetch data from
+   * API end-point and pool it every 10 min
+   */
+
+  created: function() {
+    this.loadSensorsData();
+
+    this.interval = setInterval(
+      function() {
+        this.loadSensorsData();
+      }.bind(this),
+      600000
+    );
+  },
+
+  methods: {
+    /**
+     * Method fetch humidity, temperature and barometer sensors
+     * information from Mindsphere IoT Time Series Service
+     *
+     * More information about API usage in services/mdsp.js
+     */
+    loadSensorsData: async function() {
+      let sensorsData = await mdspService.getData();
+      let weatherData = await weatherService.getData();
+      /**
+       * Set temperature, humidity and preasure values
+       * from Mindsphere IoT Timeseries
+       */
+      this.items[0].value = sensorsData[0].Temperature;
+      this.items[1].value = sensorsData[0].Humidity;
+      this.items[2].value = sensorsData[0].Barometric_Pressure;
+      this.time = sensorsData[0]._time;
+      /**
+       * Set weather data from OpenWeatherMap
+       * Converting from Kelvin to Celsius
+       */
+      this.items[4].value = Math.round(weatherData.main.temp - 273.15);
+      console.log(weatherData);
+      //console.log(sensorsData);
+    }
+  },
+  beforeDestroy: function() {
+    clearInterval(this.interval);
+  }
+};
+&lt;/script>
+
+&lt;style scoped>&lt;/style>
+</code></pre>
+              </article>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          Documentation generated by
+          <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Dec
+          13 2019 10:06:26 GMT+0200 (Eastern European Standard Time)
+        </p>
+        <p class="sidebar-created-by">
+          <a
+            href="https://github.com/SoftwareBrothers/better-docs"
+            target="_blank"
+            >BetterDocs theme</a
+          >
+          provided with <i class="fas fa-heart"></i> by
+          <a href="http://softwarebrothers.co" target="_blank"
+            >SoftwareBrothers - JavaScript Development Agency</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.min.js"></script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>

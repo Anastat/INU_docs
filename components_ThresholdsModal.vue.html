@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSDoc: components/OptionsSwitch.vue</title>
+
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="./build/entry.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Muli:100,400,700|Oswald:300|Inconsolata,700"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
+    <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
+  </head>
+
+  <body>
+    <div id="stickyNavbarOverlay"></div>
+    <div class="top-navbar">
+      <div class="container">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+          <div class="navbar-brand">
+            <h1 class="navbar-item">INU app</h1>
+
+            <a
+              id="hamburger"
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="container">
+      <div class="columns">
+        <div class="column is-3" id="sidebarNav">
+          <div class="sidebar">
+            <nav>
+              <h2><a href="index.html">Home</a></h2>
+              <div class="category">
+                <h3>Services</h3>
+                <ul>
+                  <li>
+                    <a href="services_mdsp.js.html">Mindsphere service</a>
+                  </li>
+                </ul>
+                <h3>Utils</h3>
+                <ul>
+                  <li>
+                    <a href="utils_lineChart.js.html">Line chart</a>
+                  </li>
+                </ul>
+                <h3>Views</h3>
+                <ul>
+                  <li><a href="views_Home.vue.html">Home</a></li>
+                  <li><a href="views_Options.vue.html">Options</a></li>
+                  <li><a href="views_SensorChart.vue.html">SensorChart</a></li>
+                  <li><a href="views_StatusList.vue.html">StatusList</a></li>
+                  <li><a href="views_WebView.vue.html">WebView</a></li>
+                  <li><a href="views_Account.vue.html">Account</a></li>
+                  <li><a href="views_Camera.vue.html">Camera</a></li>
+                </ul>
+                <h3>Components</h3>
+                <ul>
+                  <li><a href="components_Chart.vue.html">Chart</a></li>
+                  <li><a href="components_ItemInfo.vue.html">ItemInfo</a></li>
+                  <li><a href="components_Navbar.vue.html">Navbar</a></li>
+                  <li>
+                    <a href="components_OptionsSwitch.vue.html"
+                      >OptionsSwitch</a
+                    >
+                  </li>
+                  <li>
+                    <a href="components_ThresholdsModal.vue.html"
+                      >ThresholdsModal</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+        <div class="column is-9-desktop">
+          <div class="content" id="main-content-wrapper">
+            <header class="page-title">
+              <p>Source</p>
+              <h1>components/ThresholdsModal.vue</h1>
+            </header>
+            <article>
+              <p>
+                This component displays modal dialog for setting threshold min
+                and max value. Modal opens after toggling option to true
+                Component is used in OptionSwitch.vue
+              </p>
+              <h4>Child component:</h4>
+              <p>
+                Vue-slider - for options and configurations see documentation:
+              </p>
+              <p>https://nightcatsama.github.io/vue-slider-component/#/</p>
+
+              <h4>Methods:</h4>
+              <p>
+                -> saveThresholds() - Save threshold values in Mindsphere IoT
+                Time Series Service
+              </p>
+              <p>
+                -> checkedFalse() - On press "Cancel" set option checked value
+                to false
+              </p>
+              <p>
+                -> notification() - Throw notification if lowest threshold value
+                greater than the highest value.
+              </p>
+            </article>
+            <section>
+              <article>
+                <pre class="prettyprint source linenums"><code>&lt;template>
+    &lt;div id="modal-thresholds" uk-modal>
+        &lt;div class="uk-modal-dialog">
+            &lt;button class="uk-modal-close-default" type="button" uk-close/>
+            &lt;div class="uk-modal-header">
+                &lt;h6 class="uk-modal-title">{{ label }}&lt;h6>
+            &lt;/div>
+            &lt;div class="uk-modal-body">
+                &lt;p :class="isThresholds ? 'text-color' : ''">{{ text }}<p>
+                &lt;div v-if="dialogName == 'temperature'">
+                    Select the lowest value:
+                    &lt;vue-slider class="padding-30" v-model="minTemp" :tooltip-formatter="formatterTemperature" :min="min"
+                        :max="max" :marks="tempMarks" />
+                    &lt;br />
+                    Select the highest value:
+                    &lt;vue-slider class="padding-30" v-model="maxTemp" :tooltip-formatter="formatterTemperature"
+                        :dot-options="dotOptions" :order="false" :min="min" :max="max" :marks="tempMarks"/>
+                &lt;/div>
+                &lt;div v-if="dialogName == 'humidity'">
+                    Select the lowest value:
+                    &lt;vue-slider class="padding-30" v-model="minHumidity" :tooltip-formatter="formatterHumidity"
+                        :marks="marksHumidity" />
+                    &lt;br />
+                    Select the highest value:
+                    &lt;vue-slider class="padding-30" v-model="maxHumidity" :tooltip-formatter="formatterHumidity"
+                        :marks="marksHumidity" :dot-options="dotOptions" :order="false"/>
+                &lt;/div>
+            &lt;/div>
+            &lt;div class="uk-modal-footer uk-text-right">
+                &lt;button class="uk-button uk-button-default uk-modal-close" type="button" @click="checkedFalse(option.id)">
+                    Cancel
+                &lt;/button>
+                &lt;button class="uk-button uk-button-primary" type="button" @click="saveThresholds(option.name)">
+                    Confirm
+                &lt;/button>
+            &lt;/div>
+        &lt;/div>
+    &lt;/div>
+&lt;/template>
+
+&lt;script>
+import VueSlider from "vue-slider-component";
+import "vue-slider-component/theme/default.css";
+import mdspService from "../services/mdsp";
+
+export default {
+  name: "ThresholdsModal",
+  components: {
+    VueSlider
+  },
+  props: {
+    label: {
+      type: String
+    },
+    text: {
+      type: String
+    },
+    dialogName: {
+      type: String
+    },
+    option: {
+      type: Object
+    }
+  },
+  data() {
+    return {
+      lowHumidity: this.option.lowThreshold,
+      highHumidity: [this.option.highThreshold, 100],
+      lowTemp: this.option.lowThreshold,
+      highTemp: [this.option.highThreshold, 40],
+      min: -40,
+      max: 40,
+      formatterHumidity: "{value}%",
+      formatterTemperature: "{value}°C",
+      marksHumidity: val =>
+        val % 20 === 0
+        ? {
+          label: `${val}%`,
+          labelStyle: {
+            opacity: val * 0.01 * 0.7 + 0.3
+          },
+          labelActiveStyle: {
+            color: "#3498db"
+          }
+        }
+        : false,
+      dotOptions: [
+        {
+          disabled: false
+        },
+        {
+          disabled: true,
+          style: {
+            display: "none"
+          }
+        }
+      ],
+      tempMarks: {
+        "-40": "-40℃",
+        "-20": "-20℃",
+        "0": "0℃",
+        "20": "+20℃",
+        "40": "+40℃"
+      }
+    };
+  },
+computed: {
+  isThresholds: function() {
+    return this.dialogName == "humidity" || this.dialogName == "temperature";
+  },
+
+  minTemp: {
+    get() {
+      return this.option.name == "temperature"
+        ? this.option.lowThreshold
+        : null;
+      },
+    set(val) {
+      this.lowTemp = val;
+    }
+  },
+  maxTemp: {
+    get() {
+      return this.option.name == "temperature"
+        ? [this.option.highThreshold, 40]
+        : null;
+      },
+    set(val) {
+      this.highTemp = val[0];
+    }
+  },
+  minHumidity: {
+    get() {
+      return this.option.name == "humidity" ? this.option.lowThreshold : null;
+    },
+    set(val) {
+      this.lowHumidity = val;
+    }
+  },
+  maxHumidity: {
+    get() {
+      return this.option.name == "humidity"
+      ? [this.option.highThreshold, 100]
+      : null;
+    },
+    set(val) {
+      this.highHumidity = val[0];
+    }
+  }
+},
+created: function() {
+  //Dynamically add style to hide slider high threshold second dot
+  var all = document.getElementsByClassName("vue-slider-dot-disabled");
+  for (var i = 0; i < all.length; i++) { 
+    all[i].style.display="none" ; 
+  }
+}, 
+methods: { 
+  //Save threshold values in Mindsphere
+  saveThresholds: function(name) { 
+    const timestamp=this.moment().format("YYYY-MM-DDTHH:mm:ss.SSS"); 
+    const timestampZ=timestamp + "Z" ; 
+    //Format for Mindsphere 
+    const humidityData=[ 
+      { 
+        Humidity_High: this.highHumidity,
+        Humidity_Low: this.lowHumidity, 
+        _time: timestampZ, 
+        Humidity_Threshold: true 
+      } 
+    ]; 
+    const temperatureData=[ 
+      {
+        Temp_High: this.highTemp, 
+        Temp_Low: this.lowTemp, 
+        Temp_Threshold: true, 
+        _time: timestampZ 
+      } 
+    ]; 
+    if (name=="temperature" ) { 
+      if (this.lowTemp> this.highTemp) {
+        this.notification();
+      } else {
+        mdspService.putTempThreshold(temperatureData);
+        this.$parent.closeModal(name);
+      }
+    } else if (name == "humidity") {
+      if (this.lowHumidity > this.highHumidity) {
+        this.notification();
+      } else {
+        mdspService.putHumidityThreshold(humidityData);
+        this.$parent.closeModal(name);
+      }
+    } else {
+      this.$parent.closeModal(name);
+      }
+    },
+
+    //On press "Cancel" set option checked value to false
+    checkedFalse: function(id) {
+      this.$parent.checkedFalse(id);
+    },
+
+    notification: function() {
+      UIkit.notification
+      {
+        message:
+          "<span uk-icon='icon: warning'></span> The lowest threshold value cannot be greater than the highest value."
+      });
+    }
+  }
+};
+&lt;/script>
+
+&lt;style>
+.padding-30 {
+  padding: 30px 0px !important;
+}
+.vue-slider-dot-disabled {
+  visibility: hidden !important;
+}
+.uk-modal-title {
+  font-size: 1.8rem;
+}
+.text-color {
+  color: rgb(175, 175, 175);
+  text-align: center;
+}
+&lt;/style>
+</code></pre>
+              </article>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="content has-text-centered">
+        <p>
+          Documentation generated by
+          <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Dec
+          13 2019 10:06:26 GMT+0200 (Eastern European Standard Time)
+        </p>
+        <p class="sidebar-created-by">
+          <a
+            href="https://github.com/SoftwareBrothers/better-docs"
+            target="_blank"
+            >BetterDocs theme</a
+          >
+          provided with <i class="fas fa-heart"></i> by
+          <a href="http://softwarebrothers.co" target="_blank"
+            >SoftwareBrothers - JavaScript Development Agency</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script src="scripts/app.min.js"></script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
+</html>
